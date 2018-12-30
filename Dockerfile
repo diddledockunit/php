@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:wheezy-slim
 
 # prevent Debian's PHP packages from being installed
 # https://github.com/docker-library/php/pull/542
@@ -39,7 +39,7 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 # Enable linker optimization (this sorts the hash buckets to improve cache locality, and is non-default)
 # Adds GNU HASH segments to generated executables (this is used if present, and is much faster than sysv hash; in this configuration, sysv hash is also generated)
 # https://github.com/docker-library/php/issues/272
-ENV PHP_CFLAGS="-fstack-protector-strong -fpic -fpie -O2"
+ENV PHP_CFLAGS="-fpic -fpie -O2"
 ENV PHP_CPPFLAGS="$PHP_CFLAGS"
 ENV PHP_LDFLAGS="-Wl,-O1 -Wl,--hash-style=both -pie"
 
@@ -99,7 +99,7 @@ RUN set -eux; \
 		libcurl4-openssl-dev \
 		libedit-dev \
 		libsqlite3-dev \
-		libssl1.0-dev \
+		libssl-dev \
 		libxml2-dev \
 		zlib1g-dev \
 		${PHP_EXTRA_BUILD_DEPS:-} \
@@ -113,8 +113,8 @@ RUN set -eux; \
 	; \
 	docker-php-source extract; \
 	cd /usr/src/php; \
-	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
-	debMultiarch="$(dpkg-architecture --query DEB_BUILD_MULTIARCH)"; \
+	gnuArch="$(dpkg-architecture -qDEB_BUILD_GNU_TYPE)"; \
+	debMultiarch="$(dpkg-architecture -qDEB_BUILD_MULTIARCH)"; \
 # https://bugs.php.net/bug.php?id=74125
 	if [ ! -d /usr/include/curl ]; then \
 		ln -sT "/usr/include/$debMultiarch/curl" /usr/local/include/curl; \
