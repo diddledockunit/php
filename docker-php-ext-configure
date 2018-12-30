@@ -60,7 +60,7 @@ if [ "$pm" = 'apk' ]; then
 fi
 
 if command -v dpkg-architecture > /dev/null; then
-	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"
+	gnuArch="$(dpkg-architecture -qDEB_BUILD_GNU_TYPE)"
 	set -- --build="$gnuArch" "$@"
 fi
 
